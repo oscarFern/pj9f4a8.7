@@ -1,0 +1,17 @@
+services:
+  apacheGRUP7:  # L'etiqueta identificadora d'aquest servei dins de docker-compose.yml
+    image: httpd:latest  # Utilitzem la imatge oficial d'Apache
+    expose:
+      - "80"  # Exposem el port 80 dins del contenidor, però no a l'exterior
+    volumes:
+      - ./codi-html-php/starship-sorades-13k:/usr/local/apache2/htdocs  # Carpeta local mapejada al directori del contenidor
+
+  nginx:  # Servei d’Nginx per a distribució de càrrega
+    image: nginx:latest  # Imatge oficial d’Nginx
+    container_name: nginx_load_balancer  # Nom del contenidor d’Nginx
+    depends_on:
+      - apacheGRUP7  # Nginx dependrà que el servei Apache estigui en funcionament
+    ports:
+      - "80:80"  # Port 80 del host mapejat al port 80 del contenidor
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Fitxer de configuració d’Nginx mapejat dins el contenidor
