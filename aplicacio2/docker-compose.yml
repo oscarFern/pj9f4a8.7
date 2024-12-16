@@ -1,0 +1,47 @@
+services:
+  sMysql:
+    image: mysql:9.1
+    container_name: cMysql
+    environment:
+      MYSQL_DATABASE: "bdPj9f4a87apl2"
+      MYSQL_USER: "asix2"
+      MYSQL_PASSWORD: "FjeClot2425#"
+      MYSQL_ROOT_PASSWORD: "FjeClot2425@"
+    ports:
+      - "33306:3306"
+    volumes:
+      # Comparteix la carpeta sql de la màquina virtual amb /sql del contenidor
+      - ./sql:/sql
+      # Assigna el volum xvDades a /var/lib/mysql del contenidor
+      - xvDades:/var/lib/mysql
+    networks:
+      - xPj9f4a87apl2
+
+  sWebApp:
+    # Generació de la imatge iwebapp:1.0 a partir del Dockerfile situat a ./app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: iwebapp:1.0
+    container_name: cWebApp
+    ports:
+      - "8080:80"
+    volumes:
+      # Comparteix la carpeta app de la màquina virtual amb /var/www/html del contenidor
+      - ./app:/var/www/html
+    depends_on:
+      - sMysql
+    networks:
+      - xPj9f4a87apl2
+
+networks:
+  xPj9f4a87apl2:
+    driver: bridge
+    # El nom intern dins docker-compose és xPj9f4a87apl2, 
+    # però a la màquina virtual es dirà pj9f4a87apl2
+    name: pj9f4a87apl2
+
+volumes:
+  xvDades:
+    # El volum xvDades s'identifica amb el nom dades dins la màquina virtual
+    name: dades
